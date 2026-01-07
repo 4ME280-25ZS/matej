@@ -1,0 +1,6 @@
+supabase-config.js
+node_modules/
+supabase-config.js
+firebase-config.js
+.DS_Store
+/*.log

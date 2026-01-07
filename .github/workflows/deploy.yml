@@ -1,0 +1,28 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create supabase-config from secrets (if provided)
+        run: |
+          if [ -n "${{ secrets.SUPABASE_URL }}" ] && [ -n "${{ secrets.SUPABASE_ANON_KEY }}" ]; then
+            cat > supabase-config.js <<EOF
+export const supabaseConfig = {
+  url: "${{ secrets.SUPABASE_URL }}",
+  anonKey: "${{ secrets.SUPABASE_ANON_KEY }}"
+};
+EOF
+          else
+            echo "Supabase secrets not set; skipping supabase-config.js creation"
+          fi
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./
